@@ -113,9 +113,9 @@ src/
 | **Guru / Staff** | `putriwidya@000064` | `PutriW12_` |
 
 **Try these ready-made demo scenarios:**
-- **Student → CBT exam:** enter token **`CBT123`** (10 multiple-choice questions, auto-scored).
-- **Student → Essay task:** open the essay assignment — the **Canvas PDF viewer** loads the bundled `/demo-soal-esai.pdf`; answer with the rich-text editor and submit.
-- **Student → Teacher quiz:** token **`WEBKUIS`** (5-question CBT with leaderboard & trophy tiers).
+- **Student → CBT exam (operator):** enter token **`CBT8H2K4`** (8-char official token; 10 multiple-choice questions, auto-scored).
+- **Student → Essay task (guru):** open the essay assignment — the **Canvas PDF viewer** loads the bundled `/demo-soal-esai.pdf`; answer with the rich-text editor and submit.
+- **Student → Teacher quiz (guru):** token **`WEBQ01`** (6-char teacher token; 5-question CBT with leaderboard & trophy tiers).
 - **Password reset (self-service):** use any ID above; the OTP is fixed for the demo → **`123456`**.
 
 **Convenience features**

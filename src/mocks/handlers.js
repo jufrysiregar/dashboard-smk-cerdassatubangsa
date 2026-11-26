@@ -611,7 +611,71 @@ on('DELETE', '/teacher/materials/:id', (_ctx, _b, params) => {
   s('materials', g('materials').filter((m) => String(m.id) !== params.id));
   return { message: 'Dihapus' };
 });
-on('GET', '/teacher/homeroom', () => ({ data: { kelas: 'X RPL 1', students: students().filter((x) => x.kelas_id === 1).map(userRow), prestasi: g('achievements'), bk: [] } }));
+// Wali Kelas — Single-Page Command Center payload (component reads response.data directly)
+function buildHomeroom(u) {
+  const cid = u?.homeroom_class_id;
+  if (!cid) return { class_info: null, students: [] };
+  const cls = g('classes').find((c) => c.id === cid);
+  const studs = students().filter((x) => x.kelas_id === cid);
+  const subjects = g('subjects').slice(0, 8);
+  const att = g('attendance');
+  const billings = g('billings');
+  const achievements = g('achievements');
+  const out = studs.map((x, i) => {
+    const subject_grades = {};
+    subjects.forEach((m, mi) => { subject_grades[m.id] = { akhir: 78 + ((mi * 3 + i * 5) % 20) }; });
+    const myAtt = att.filter((a) => a.siswa_id === x.id);
+    const presensi = {
+      hadir: myAtt.filter((a) => a.status === 'hadir').length,
+      sakit: myAtt.filter((a) => a.status === 'sakit').length,
+      izin: myAtt.filter((a) => a.status === 'izin').length,
+      alpha: myAtt.filter((a) => a.status === 'alpha').length,
+    };
+    const bills = billings.filter((b) => b.student_id === x.id);
+    const total_due = bills.filter((b) => b.status !== 'lunas').reduce((a, b) => a + money(b.remaining_amount), 0);
+    const skor_akhir = Math.round(Object.values(subject_grades).reduce((a, s) => a + s.akhir, 0) / Math.max(subjects.length, 1));
+    const poin = achievements.filter((a) => a.siswa_id === x.id).length * 5;
+    return {
+      id: x.id, name: x.name, nisn: x.nisn, gender: x.gender || 'L',
+      subject_grades, presensi,
+      tagihan: { total_due, has_any: bills.length > 0 },
+      rapor: { lengkap: true, status: i % 2 === 0 ? 'final' : 'draft' },
+      poin, skor_akhir, pkl: { nilai_akhir: null },
+    };
+  });
+  const ranked = [...out].sort((a, b) => (b.skor_akhir + b.poin) - (a.skor_akhir + a.poin));
+  ranked.forEach((r, ri) => { const t = out.find((x) => x.id === r.id); if (t) t.peringkat = ri + 1; });
+  const totalAtt = out.reduce((a, s) => a + s.presensi.hadir + s.presensi.sakit + s.presensi.izin + s.presensi.alpha, 0);
+  const totalHadir = out.reduce((a, s) => a + s.presensi.hadir, 0);
+  return {
+    class_info: cls ? { id: cls.id, name: cls.nama, capacity: cls.kapasitas, tingkat: cls.tingkat, jurusan: cls.jurusan, academic_year: cls.tahun_ajaran, semester: cls.semester } : null,
+    homeroom_teacher: { id: u.id, name: u.name },
+    kpi: {
+      total_students: out.length,
+      l_count: out.filter((s) => s.gender === 'L').length,
+      p_count: out.filter((s) => s.gender === 'P').length,
+      attendance_pct: totalAtt ? Math.round((totalHadir / totalAtt) * 100) : null,
+      avg_score: Math.round(out.reduce((a, s) => a + s.skor_akhir, 0) / Math.max(out.length, 1)),
+      tuntas: out.filter((s) => s.skor_akhir >= 75).length,
+      belum_tuntas: out.filter((s) => s.skor_akhir < 75).length,
+    },
+    subjects: subjects.map((m) => ({ id: m.id, name: m.nama })),
+    pkl_enabled: false,
+    publish_summary: { all_ready: true, can_publish: out.filter((s) => s.rapor.status !== 'final').length },
+    students: out,
+    prestasi: achievements.filter((a) => studs.find((s) => s.id === a.siswa_id)),
+    bk: [],
+  };
+}
+on('GET', '/teacher/homeroom', (ctx) => buildHomeroom(currentUser(ctx)));
+on('GET', '/teacher/homeroom/student/:id', (_ctx, _b, params) => {
+  const data = buildHomeroom(currentUser(_ctx));
+  return data.students.find((s) => String(s.id) === params.id) || { id: Number(params.id) };
+});
+on('POST', '/teacher/homeroom/publish', () => ({ published: 1, skipped: [], message: 'Rapor demo dibagikan ke portal siswa.' }));
+on('POST', '/teacher/homeroom/rapor', () => ({ message: 'Rapor tersimpan' }));
+on('POST', '/teacher/homeroom/prestasi', () => ({ message: 'Prestasi ditambahkan' }));
+on('POST', '/teacher/homeroom/bk', () => ({ message: 'Catatan BK tersimpan' }));
 on('GET', '/teacher/schedules', () => ({ data: g('teacherSubjects') }));
 
 // ------------------------------ STUDENT ------------------------------------
@@ -657,7 +721,7 @@ on('GET', '/student/dashboard', (ctx) => {
       attendance: { monthly: [monthly], summary: { weekly_percentage: 96, weekly_total: studs.length } },
       schedule: { today: { sessions: [{ time: '07:30 - 09:00', subject: 'Informatika', teacher: 'Budi Santoso', room: 'Lab RPL 1' }, { time: '09:15 - 10:45', subject: 'Basis Data', teacher: 'Rina Melati', room: 'R. X RPL 1' }] }, days: [{ day: 'Senin', classes: [{ subject: 'Informatika' }, { subject: 'Basis Data' }] }] },
       evaluations: { upload_tasks: uploadTasks, summary: { completed: uploadTasks.filter((t) => t.status === 'dinilai' || t.status === 'dikumpul').length, total: uploadTasks.length, percentage: Math.round((uploadTasks.filter((t) => t.status !== 'belum_dikumpulkan').length / Math.max(uploadTasks.length, 1)) * 100) } },
-      billing: { summary: { pending_count: pending.length, total_due: totalDue, verification_count: billings.filter((b) => b.status === 'proses_verifikasi').length, verification_amount: billings.filter((b) => b.status === 'proses_verifikasi').reduce((a, b) => a + money(b.amount), 0), lunas_count: billings.filter((b) => b.status === 'lunas').length, paid_total: billings.filter((b) => b.status === 'lunas').reduce((a, b) => a + money(b.paid_amount), 0), progress_percentage: Math.round((billings.filter((b) => b.status === 'lunas').length / Math.max(billings.length, 1)) * 100) }, items: billings.map((b) => ({ title: b.title, bill_code: b.bill_code, category: b.category, amount: b.amount, paid_amount: b.paid_amount, remaining_amount: b.remaining_amount, due_date: b.due_date, status: b.status, can_upload_confirmation: b.status === 'belum_bayar' || b.status === 'ditolak' })) },
+      billing: { summary: { pending_count: pending.length, pending_amount: totalDue, total_due: totalDue, verification_count: billings.filter((b) => b.status === 'proses_verifikasi').length, verification_amount: billings.filter((b) => b.status === 'proses_verifikasi').reduce((a, b) => a + money(b.amount), 0), lunas_count: billings.filter((b) => b.status === 'lunas').length, paid_total: billings.filter((b) => b.status === 'lunas').reduce((a, b) => a + money(b.paid_amount), 0), progress_percentage: Math.round((billings.filter((b) => b.status === 'lunas').length / Math.max(billings.length, 1)) * 100) }, items: billings.map((b) => ({ title: b.title, bill_code: b.bill_code, category: b.category, amount: b.amount, paid_amount: b.paid_amount, remaining_amount: b.remaining_amount, due_date: b.due_date, status: b.status, can_upload_confirmation: b.status === 'belum_bayar' || b.status === 'ditolak' })) },
       academic_period: { academic_year: '2026/2027', semester: 'Ganjil' },
     },
   };
@@ -672,9 +736,7 @@ on('POST', '/student/exam/start', (ctx, body) => {
   const examId = Number(body?.exam_id);
   const sess = g('examSessions').find((e) => e.id === examId);
   if (!sess) return { __error: { status: 422, body: { message: 'Sesi ujian tidak ditemukan.' } } };
-  if (String(body?.token).toUpperCase() !== String(sess.token).toUpperCase()) {
-    return { __error: { status: 422, body: { message: 'Token salah. Gunakan token ' + sess.token } } };
-  }
+  // Demo: token apa pun diterima (check-token sudah mengotorisasi).
   const attempts = g('attempts');
   let attempt = attempts.find((a) => a.exam_id === examId && a.siswa_id === (currentUser(ctx)?.id));
   if (!attempt) {
@@ -721,18 +783,31 @@ on('POST', '/student/submissions/quiz', (ctx, body) => {
   return { data: { score, correct_answers: correct, total_questions: questions.length, review, message: `Nilai kamu ${score}` } };
 });
 
-// check-token: official exam (session.token) OR teacher quiz (task.token_akses)
+// check-token: official exam (session.token) OR teacher quiz (task.token_akses).
+// Demo behaviour: ANY token is accepted — exact match wins, otherwise a real exam
+// is chosen deterministically from the token so the student always lands on a
+// working exam screen (CBT pilgan, esai, or operator CBT).
+const officialPayload = (sess) => ({
+  status: 'ready', message: 'Token valid. Silakan mulai ujian.',
+  data: { mode: 'official', mode_soal: 'cbt_docx', exam_code: sess.token, id: sess.id, nama: sess.nama, mapel: sess.mapel, target: sess.target, jenis: sess.jenis, duration_minutes: sess.duration_minutes, resume: false },
+});
+const teacherPayload = (task) => ({
+  status: 'ready', message: 'Token valid.',
+  data: { mode: 'teacher_quiz', mode_soal: task.mode_soal, exam_code: task.token_akses, id: task.id, nama: task.judul, mapel: task.mapel_nama, target: task.kelas_nama, questions: task.questions || [], ends_at: task.deadline_at, remaining_seconds: (task.duration_minutes || 30) * 60, saved_answers: {}, soal_pdf_api_url: task.soal_pdf_api_url || '', pdf_url: task.pdf_url || null, izin_ketik: task.izinkan_ketik, izin_upload_foto: task.izinkan_upload_foto, duration_minutes: task.duration_minutes, tampilkan_nilai: task.tampilkan_nilai },
+});
 on('POST', '/student/exams/check-token', (ctx, body) => {
   const tok = String(body?.token || '').trim().toUpperCase();
   const sess = g('examSessions').find((e) => String(e.token).toUpperCase() === tok);
-  if (sess) {
-    return { status: 'ready', message: 'Token valid. Silakan mulai ujian.', data: { mode: 'official', mode_soal: 'cbt_docx', exam_code: sess.token, id: sess.id, nama: sess.nama, mapel: sess.mapel, target: sess.target, jenis: sess.jenis, duration_minutes: sess.duration_minutes, resume: false } };
-  }
+  if (sess) return officialPayload(sess);
   const task = g('tasks').find((t) => String(t.token_akses).toUpperCase() === tok);
-  if (task) {
-    return { status: 'ready', message: 'Token valid.', data: { mode: 'teacher_quiz', mode_soal: task.mode_soal, exam_code: task.token_akses, id: task.id, nama: task.judul, mapel: task.mapel_nama, target: task.kelas_nama, questions: task.questions || [], ends_at: task.deadline_at, remaining_seconds: (task.duration_minutes || 30) * 60, saved_answers: {}, soal_pdf_api_url: task.soal_pdf_api_url || '', pdf_url: task.pdf_url || null, izin_ketik: task.izinkan_ketik, izin_upload_foto: task.izinkan_upload_foto, duration_minutes: task.duration_minutes, tampilkan_nilai: task.tampilkan_nilai } };
-  }
-  return { status: 'invalid', message: 'Token tidak dikenali. Coba ' + (g('examSessions')[0]?.token || 'CBT123') };
+  if (task) return teacherPayload(task);
+  // Fallback: pick a real exam deterministically from any token.
+  const pool = [];
+  g('examSessions').forEach((e) => pool.push(officialPayload(e)));
+  g('tasks').filter((t) => t.mode_soal).forEach((t) => pool.push(teacherPayload(t)));
+  if (!pool.length) return { status: 'invalid', message: 'Belum ada ujian aktif.' };
+  const idx = [...(tok || 'X')].reduce((a, c) => a + c.charCodeAt(0), 0) % pool.length;
+  return pool[idx];
 });
 on('POST', '/student/exams/verify-token', (_ctx, body) => ({ status: 'ready', message: 'OK', data: {} }));
 

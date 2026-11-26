@@ -9,7 +9,7 @@
 
 import { KEYS, write, read, wipeAll, dayOffset, monthAgoLabel, nowIso } from './db';
 
-export const SEED_VERSION = '2026-11-26-1';
+export const SEED_VERSION = '2026-11-26-2';
 
 const SCHOOL = 'SMK Cerdas Satu Bangsa';
 const ACADEMIC_YEAR = '2026/2027';
@@ -234,7 +234,7 @@ function buildPaketSoal() {
       description: 'Soal PH Informatika kelas X RPL — 10 butir pilihan ganda.',
       subject: 'Informatika', mapel: 'Informatika', class_name: 'X RPL 1', kelas: 'X RPL 1', school_class_id: 1,
       question_format: 'pilihan_ganda', soals_count: 10, jumlah_soal: 10, type_label: 'Pilihan Ganda',
-      is_active: true, exam_code: 'CBT123', delivery_mode: 'realtime', duration_minutes: 60,
+      is_active: true, exam_code: 'CBT8H2K4', delivery_mode: 'realtime', duration_minutes: 60,
       show_score: true, created_by: 'Budi Santoso', created_at: dayOffset(-3),
     },
     {
@@ -253,7 +253,7 @@ function buildExamSessions() {
     {
       id: 1, nama: 'Penilaian Harian Informatika', mapel: 'Informatika', target: 'X RPL 1',
       kelas_id: 1, subject_id: 4, paket_soal_id: 1, show_score: true, jenis: 'cbt', exam_type: 'cbt',
-      token: 'CBT123', duration_minutes: 60, end_time: dayOffset(2) + 'T18:00:00', status: 'aktif',
+      token: 'CBT8H2K4', duration_minutes: 60, end_time: dayOffset(2) + 'T18:00:00', status: 'aktif',
     },
   ];
 }
@@ -265,7 +265,7 @@ function buildTasks() {
     {
       id: 101, judul: 'Kuis Pemrograman Web', title: 'Kuis Pemrograman Web', school_class_id: 1,
       subject_id: 6, kelas_nama: 'X RPL 1', mapel_nama: 'Pemrograman Web', mode_soal: 'cbt_docx',
-      deskripsi: 'Kuis singkat seputar HTML/CSS.', bobot: 20, token_akses: 'WEBKUIS',
+      deskripsi: 'Kuis singkat seputar HTML/CSS.', bobot: 20, token_akses: 'WEBQ01',
       starts_at: dayOffset(-1) + 'T08:00:00', deadline_at: dayOffset(3) + 'T23:59:00', duration_minutes: 30,
       acak_soal: false, tampilkan_nilai: true, izinkan_ketik: true, izinkan_upload_foto: false,
       total_poin: 100, created_by: 'Budi Santoso', display_status: 'Aktif',
@@ -565,7 +565,7 @@ export function buildAllData() {
     schoolProfile: {
       school_name: SCHOOL, address: 'Jl. Pendidikan No. 1, Indonesia',
       finance_account_number: '123-4567-890', finance_bank_name: 'Bank Sekolah', finance_account_holder: 'SMK Cerdas Satu Bangsa',
-      finance_payment_channels: ['Tunai', 'Transfer', 'QRIS'],
+      finance_payment_channels: 'Tunai, Transfer, QRIS',
     },
   };
 }
