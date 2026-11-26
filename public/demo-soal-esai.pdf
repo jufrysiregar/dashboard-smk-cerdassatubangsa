@@ -1,0 +1,201 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 3 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 961 >>
+stream
+BT
+0 0 0 rg
+1 0 0 1 72 760 Tm
+/F2 18 Tf
+(SMK Cerdas Satu Bangsa) Tj
+0 0 0 rg
+1 0 0 1 72 734 Tm
+/F2 14 Tf
+(Lembar Soal - Tugas Esai: Analisis Basis Data) Tj
+0 0 0 rg
+1 0 0 1 72 712 Tm
+/F1 12 Tf
+(Mata Pelajaran : Basis Data) Tj
+0 0 0 rg
+1 0 0 1 72 694 Tm
+/F1 12 Tf
+(Kelas          : X RPL 1) Tj
+0 0 0 rg
+1 0 0 1 72 676 Tm
+/F1 12 Tf
+(Waktu          : 90 menit) Tj
+0 0 0 rg
+1 0 0 1 72 658 Tm
+/F1 12 Tf
+(Sifat          : Individu, buka catatan) Tj
+0 0 0 rg
+1 0 0 1 72 630 Tm
+/F2 13 Tf
+(Petunjuk Pengerjaan:) Tj
+0 0 0 rg
+1 0 0 1 72 612 Tm
+/F1 12 Tf
+(1. Jawablah seluruh soal pada rich text editor yang tersedia.) Tj
+0 0 0 rg
+1 0 0 1 72 596 Tm
+/F1 12 Tf
+(2. Anda juga dapat mengunggah foto pekerjaan bila diperlukan.) Tj
+0 0 0 rg
+1 0 0 1 72 580 Tm
+/F1 12 Tf
+(3. Tuliskan jawaban dengan bahasa Anda sendiri.) Tj
+0 0 0 rg
+1 0 0 1 72 564 Tm
+/F1 12 Tf
+(4. Klik "Kirim Jawaban" sebelum tenggat berakhir.) Tj
+0 0 0 rg
+1 0 0 1 72 548 Tm
+/F2 12 Tf
+(Selamat mengerjakan!) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 3 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 1036 >>
+stream
+BT
+0 0 0 rg
+1 0 0 1 72 760 Tm
+/F2 16 Tf
+(Soal Esai) Tj
+0 0 0 rg
+1 0 0 1 72 734 Tm
+/F2 13 Tf
+(Soal 1 \(Bobot 25\)) Tj
+0 0 0 rg
+1 0 0 1 72 718 Tm
+/F1 12 Tf
+(Jelaskan perbedaan antara primary key dan foreign key, serta) Tj
+0 0 0 rg
+1 0 0 1 72 703 Tm
+/F1 12 Tf
+(berikan masing-masing satu contoh penerapannya pada database) Tj
+0 0 0 rg
+1 0 0 1 72 688 Tm
+/F1 12 Tf
+(sekolah.) Tj
+0 0 0 rg
+1 0 0 1 72 662 Tm
+/F2 13 Tf
+(Soal 2 \(Bobot 25\)) Tj
+0 0 0 rg
+1 0 0 1 72 646 Tm
+/F1 12 Tf
+(Uraikan tahap-tahap normalisasi database mulai dari 1NF hingga) Tj
+0 0 0 rg
+1 0 0 1 72 631 Tm
+/F1 12 Tf
+(3NF. Mengapa normalisasi penting dalam perancangan basis data?) Tj
+0 0 0 rg
+1 0 0 1 72 616 Tm
+/F1 12 Tf
+() Tj
+0 0 0 rg
+1 0 0 1 72 590 Tm
+/F2 13 Tf
+(Soal 3 \(Bobot 25\)) Tj
+0 0 0 rg
+1 0 0 1 72 574 Tm
+/F1 12 Tf
+(Buatlah query SQL untuk menampilkan daftar siswa beserta kelas) Tj
+0 0 0 rg
+1 0 0 1 72 559 Tm
+/F1 12 Tf
+(dan jumlah tagihan SPP yang sudah dibayar. Jelaskan fungsi setiap) Tj
+0 0 0 rg
+1 0 0 1 72 544 Tm
+/F1 12 Tf
+(klausa pada query tersebut.) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 3 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 771 >>
+stream
+BT
+0 0 0 rg
+1 0 0 1 72 760 Tm
+/F2 16 Tf
+(Soal Esai \(lanjutan\)) Tj
+0 0 0 rg
+1 0 0 1 72 734 Tm
+/F2 13 Tf
+(Soal 4 \(Bobot 25\)) Tj
+0 0 0 rg
+1 0 0 1 72 718 Tm
+/F1 12 Tf
+(Sebuah tabel transaksi memiliki data duplikat dan field yang tidak) Tj
+0 0 0 rg
+1 0 0 1 72 703 Tm
+/F1 12 Tf
+(atomik. Identifikasi masalah tersebut dan usulkan perbaikan) Tj
+0 0 0 rg
+1 0 0 1 72 688 Tm
+/F1 12 Tf
+(struktur tabelnya.) Tj
+0 0 0 rg
+1 0 0 1 72 662 Tm
+/F2 13 Tf
+(Catatan Penilaian:) Tj
+0 0 0 rg
+1 0 0 1 72 644 Tm
+/F1 12 Tf
+(Guru akan menilai kedalaman analisis, ketepatan istilah, dan) Tj
+0 0 0 rg
+1 0 0 1 72 628 Tm
+/F1 12 Tf
+(kerapian jawaban Anda. Total poin maksimal 100.) Tj
+0 0 0 rg
+1 0 0 1 72 612 Tm
+/F1 12 Tf
+() Tj
+0 0 0 rg
+1 0 0 1 72 596 Tm
+/F2 12 Tf
+(- Dokumen contoh \(demo\) -) Tj
+ET
+endstream
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000202 00000 n 
+0000000272 00000 n 
+0000000408 00000 n 
+0000001420 00000 n 
+0000001556 00000 n 
+0000002644 00000 n 
+0000002781 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+3604
+%%EOF

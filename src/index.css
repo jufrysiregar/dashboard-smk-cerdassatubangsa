@@ -1,0 +1,393 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  html {
+    /* Cadangkan ruang scrollbar vertikal secara permanen agar lebar konten tidak
+       berubah ("melebar lalu menyempit") saat modal mengunci scroll (overflow:hidden). */
+    scrollbar-gutter: stable;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none;
+  }
+  
+  .input-error {
+    @apply border-red-500 focus:ring-red-500;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+  }
+  
+  .menu-item {
+    @apply flex items-center gap-4 p-4 rounded-lg bg-white border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer;
+  }
+  
+  .menu-item:hover .menu-icon {
+    @apply scale-110;
+  }
+  
+  .menu-icon {
+    @apply w-14 h-14 rounded-lg flex items-center justify-center transition-transform duration-200;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Modal Open: kunci scroll halaman belakang. Ruang scrollbar tetap dicadangkan lewat
+   scrollbar-gutter:stable di html, jadi TIDAK ada layout shift saat modal buka/tutup.
+   Jangan set scrollbar-width:none / ::-webkit-scrollbar{width:0} di sini, karena akan
+   membatalkan cadangan gutter dan memicu efek "melebar". */
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Utility to completely hide scrollbars on modal backdrops */
+.no-scrollbar,
+.modal-backdrop-clean {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.no-scrollbar::-webkit-scrollbar,
+.modal-backdrop-clean::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Sistem animasi halus & konsisten (Dashboard Eksekutif + Menu 2 s.d. 7) ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Stagger anak langsung (kartu KPI) muncul berurutan, jeda 70ms. */
+.stagger-grid > * {
+  animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger-grid > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-grid > *:nth-child(2) { animation-delay: 70ms; }
+.stagger-grid > *:nth-child(3) { animation-delay: 140ms; }
+.stagger-grid > *:nth-child(4) { animation-delay: 210ms; }
+.stagger-grid > *:nth-child(5) { animation-delay: 280ms; }
+.stagger-grid > *:nth-child(6) { animation-delay: 350ms; }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Bar progres / grafik SVG mengisi nilai secara halus saat dimuat. */
+@keyframes growX {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.animate-grow-x {
+  transform-origin: left center;
+  animation: growX 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes drawIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-draw-in {
+  animation: drawIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Donut SVG digambar (stroke) secara halus saat dimuat. */
+@keyframes donutDraw {
+  from { stroke-dashoffset: var(--dash-len, 1000); }
+  to   { stroke-dashoffset: 0; }
+}
+
+.animate-donut-seg {
+  animation: donutDraw 1s ease-out both;
+}
+
+/* Hover lift halus untuk kartu KPI. */
+.kpi-hover {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.kpi-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px -18px rgba(15, 23, 42, 0.28);
+}
+.kpi-hover:hover .kpi-watermark {
+  transform: scale(1.08);
+}
+.kpi-watermark {
+  transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-grow-x,
+  .animate-draw-in,
+  .animate-donut-seg,
+  .kpi-hover {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+/* Cinematic Shimmer Animation */
+@keyframes shimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(150%) skewX(-20deg); }
+}
+
+.shimmer-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.2) 80%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite linear;
+  z-index: 50;
+  pointer-events: none;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite ease-in-out;
+}
+
+/* Ripple titik status online (dua gelombang keluar seperti radar) */
+@keyframes dot-ripple {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(16, 185, 129, 0.55),
+      0 0 0 0 rgba(16, 185, 129, 0.30);
+  }
+  65% {
+    box-shadow:
+      0 0 0 6px rgba(16, 185, 129, 0),
+      0 0 0 3px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(16, 185, 129, 0),
+      0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.animate-dot-ripple {
+  animation: dot-ripple 1.8s ease-out infinite;
+}
+
+/* Premium Global Button Shimmer - Continuous */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.18) 40%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.18) 60%,
+    transparent 80%
+  );
+  transform: translateX(-200%);
+  animation: shimmer-continuous 1.6s infinite linear;
+}
+
+@keyframes shimmer-continuous {
+  0%   { transform: translateX(-200%) skewX(-15deg); }
+  100% { transform: translateX(350%)  skewX(-15deg); }
+}
+
+/* ── IDENTITAS card: gaya shimmer "rim glow" — border bercahaya berputar + cahaya radial bernapas ── */
+@property --id-ring-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.id-glow { position: absolute; inset: 0; z-index: 0; border-radius: 1rem; pointer-events: none; background: radial-gradient(120% 90% at 28% 0%, rgba(186,230,253,.6), transparent 60%); animation: id-glow-pulse 4s ease-in-out infinite; }
+@keyframes id-glow-pulse { 0%, 100% { opacity: .35; } 50% { opacity: .7; } }
+.id-ring { position: absolute; inset: -1px; z-index: 0; border-radius: 1rem; padding: 1.5px; pointer-events: none; filter: drop-shadow(0 0 4px rgba(56,189,248,.45));
+  background: conic-gradient(from var(--id-ring-angle), rgba(125,211,252,0) 0deg, #7dd3fc 70deg, #ffffff 110deg, #38bdf8 150deg, rgba(125,211,252,0) 250deg, rgba(125,211,252,0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+  animation: id-ring-spin 5s linear infinite; }
+@keyframes id-ring-spin { to { --id-ring-angle: 360deg; } }
+
+/* Pastel Tones for Statistic Cards */
+.bg-soft-blue { background-color: #f0f7ff; border-color: #e0efff; }
+.bg-soft-green { background-color: #f0fff4; border-color: #dcffe4; }
+.bg-soft-yellow { background-color: #fffaf0; border-color: #ffefd5; }
+.bg-soft-indigo { background-color: #f5f3ff; border-color: #ede9fe; }
+.bg-soft-rose { background-color: #fff1f2; border-color: #ffe4e6; }
+
+/* ── Ruler scrollbar — slim track, round thumb ── */
+.scrollbar-ruler {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.scrollbar-ruler::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+.scrollbar-ruler::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-ruler::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+.scrollbar-ruler::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+/* ── Sembunyikan panah/caret bawaan <input list> (datalist) — autocomplete tetap jalan ── */
+.no-datalist-caret::-webkit-list-button,
+.no-datalist-caret::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── RichEssayEditor: placeholder saat kosong + list terformat ── */
+.rich-essay-content:empty::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+  pointer-events: none;
+}
+.rich-essay-content ul { list-style: disc; padding-left: 1.4rem; margin: 0.25rem 0; }
+.rich-essay-content ol { list-style: decimal; padding-left: 1.4rem; margin: 0.25rem 0; }
+.rich-essay-content p { margin: 0.25rem 0; }
+
+/* ── Render HTML jawaban esai murid (pratinjau Guru) & .docx mammoth ── */
+.essay-render ul { list-style: disc; padding-left: 1.4rem; margin: 0.4rem 0; }
+.essay-render ol { list-style: decimal; padding-left: 1.4rem; margin: 0.4rem 0; }
+.essay-render p { margin: 0.4rem 0; }
+.essay-render h1, .essay-render h2, .essay-render h3 { font-weight: 800; margin: 0.5rem 0; }
+.essay-render b, .essay-render strong { font-weight: 800; }
+.docx-preview ul { list-style: disc; padding-left: 1.4rem; }
+.docx-preview ol { list-style: decimal; padding-left: 1.4rem; }
+.docx-preview p { margin: 0.4rem 0; }
